@@ -155,6 +155,25 @@ describe TwilioTestToolkit::CallScope do
       @call.has_dial?("12345").should be_true     # Partial match
     end
   end
+
+  describe "enqueue" do
+    before(:each) do
+      @call = ttt_call(test_enqueue_twilio_index_path, @our_number, @their_number)
+    end
+
+    it "should have the expected enqueue methods" do
+      @call.should respond_to(:has_enqueue?)
+    end
+
+    it "should have all the right enqueue value (action, noun, and waitUrl) for has_enqueue?" do
+      @call.has_enqueue?(wait_url: "another-url.xml").should be_false
+      @call.has_enqueue?(wait_url: "some-url.xml").should be_false
+      @call.has_enqueue?(wait_url: "some-url.xml", noun: "xyz").should be_false
+      @call.has_enqueue?(wait_url: "some-url.xml", noun: "some_url").should be_true
+      @call.has_enqueue?(wait_url: "some-url.xml", noun: "some_url", action: "some-action.xml").should be_false
+    end
+
+  end
   
   describe "hangup" do
     describe "success" do
