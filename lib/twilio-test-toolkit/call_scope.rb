@@ -40,6 +40,16 @@ module TwilioTestToolkit
       return false
     end
 
+    def has_enqueue?(params={})
+      @xml.xpath("Enqueue").each do |s|
+        wait_url = s.attribute('waitUrl') ? (s.attribute('waitUrl').value == params[:wait_url]) : (s.attribute('waitUrl') == params[:wait_url])
+        noun = s.inner_text.present? ? (s.inner_text == params[:noun]) : (s.inner_text == (params[:noun] ||= '') )
+        action = s.attribute('action') ? action = (s.attribute('action').value == params[:action]) : action = (s.attribute('action') == params[:action])
+        return wait_url && noun && action
+      end
+      return false
+    end
+
     # Stuff for Dials
     def has_dial?(number)
       @xml.xpath("Dial").each do |s|
